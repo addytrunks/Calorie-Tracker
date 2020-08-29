@@ -1,0 +1,120 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Tracker</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <style>
+        body{
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{% url 'home' %}">Calorie Tracker</a>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+              <a class="nav-link active" aria-current="page" href="#">About</a>
+              </div>
+          </div>
+        </div>
+      </nav>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+<script>
+  var table = document.getElementById('table');
+  var carbs=0,protein=0,fats=0,calories=0;
+
+  for (var i =1;i < table.rows.length-1;i++){
+    carbs+=parseFloat(table.rows[i].cells[1].innerHTML)
+    carbs = Math.round(carbs)
+
+    protein+=parseFloat(table.rows[i].cells[2].innerHTML)
+    protein = Math.round(protein)
+
+    fats+=parseFloat(table.rows[i].cells[3].innerHTML)
+    fats = Math.round(fats)
+
+    calories+=parseFloat(table.rows[i].cells[4].innerHTML)
+    calories = Math.round(calories)
+  }
+
+  document.getElementById('carbs').innerHTML = "<b>" + carbs + "</b>"
+  document.getElementById('fats').innerHTML = "<b>" + fats + "</b>"
+  document.getElementById('protein').innerHTML = "<b>" + protein + "</b>"
+  document.getElementById('calories').innerHTML = "<b>" + calories + "</b>"
+
+  var calprog = (calories/2000) * 100
+
+  if(calprog > 50){
+    document.getElementsByClassName('at')[0].setAttribute('style','width:'+calprog+"%" )
+    document.getElementsByClassName('at')[0].innerHTML = calories
+
+  }
+  if(calprog < 45 ){
+    document.getElementsByClassName('at')[0].setAttribute('style','width:'+calprog+"%" )
+    document.getElementsByClassName('at')[0].setAttribute('class','progress-bar at progress-bar-striped progress-bar-animated bg-danger')
+    document.getElementsByClassName('at')[0].innerHTML = calories 
+  }
+
+  if(calprog > 80){
+    document.getElementsByClassName('at')[0].setAttribute('style','width:'+calprog+"%" )
+    document.getElementsByClassName('at')[0].setAttribute('class','progress-bar at progress-bar-striped progress-bar-animated bg-success')
+    document.getElementsByClassName('at')[0].innerHTML = calories + "Good,Keep it up."
+  }
+
+  if(calories > 2000){
+    document.getElementsByClassName('at')[0].innerHTML = "2000.You have eaten a lot"
+
+  }
+
+  var total  = carbs+protein+fats
+  var carbP = Math.round((carbs/total)*100)
+  var proP = Math.round((protein/total)*100)
+  var fatsP = Math.round((fats/total)*100)
+
+
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Carbs'+carbP+"%" , 'Protein'+proP+"%", 'Fats'+fatsP+"%"],
+        datasets: [{
+            label: '# of Votes',
+            data: [carbP,proP,fatsP],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: false
+                }
+            }]
+        }
+    }
+});
+</script>
+</html>

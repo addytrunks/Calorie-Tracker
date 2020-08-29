@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<div class="card">
+    <div class="card-header">
+        Delete Food Item
+    </div>
+
+    <div class="card-body">
+        <p>Are you sure you want to delete all the food items?</p>
+        <form method="POST" class="form-inline">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger btn-md" value="Delete">
+            <a href="{% url 'home' %}" class="btn btn-md btn-info">No, take me back</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

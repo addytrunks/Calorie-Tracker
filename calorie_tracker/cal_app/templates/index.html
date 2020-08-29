@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+
+<h4>Calorie Goal</h4>
+<div class="progress">
+    <div class="progress-bar at progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
+</div>
+
+<form method="post" class="mt-5">
+{% csrf_token %}
+<div class="row g-2">
+    <div class="col-auto">
+        <select class="form-select" aria-label="Default select example" style="width: 1000px;" id='food' name="food">
+            {% for food in foods %}
+                <option>{{ food.name }}</option>
+            {% endfor %}
+        </select>        
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-md btn-outline-success" style="width: 78px;">Add</button>
+    </div>
+</div>
+</form>
+
+<h4 class="mt-4">Total Consumption</h4>
+{% if count > 0 %}
+<a href="{% url 'delete_all' %}" class="btn btn-block btn-outline-danger">Remove All</a>
+{% endif %}
+<br>
+<div class="row">
+
+    <div class="col-md-8">
+        <table class="table table-hover" id='table'>
+            <tr class="table-dark">
+                <td>Food Item</td>
+                <td>Carbs(g)</td>
+                <td>Protein(g)</td>
+                <td>Fats(g)</td>
+                <td>Calories(g)</td>
+                <td>Remove</td>
+            </tr>
+            {% for c in consumed %}
+            <tr>
+                <td>{{ c.food_consumed.name }}</td>
+                <td>{{ c.food_consumed.carbs }}</td>
+                <td>{{ c.food_consumed.proteins }}</td>
+                <td>{{ c.food_consumed.fats }}</td>
+                <td>{{ c.food_consumed.calories }}</td>
+                <td><a href="{% url 'delete' c.id %}" class="btn btn-sm btn-outline-danger">X</a></td>
+            </tr>
+            {% endfor %}
+
+            <tr class="table-active">
+                <td><b>Total(in g)</b></td>
+                <td id='carbs'></td>
+                <td id='protein'></td>
+                <td id='fats'></td>
+                <td id='calories'></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card-header bg-dark text-white">
+            Macronutrients breakdown
+        </div>
+
+        <div class="div">
+            <canvas id="myChart" width="300" height="300"></canvas>
+        </div>
+
+    </div>
+</div>
+<br>
+{% endblock %}
+
+
